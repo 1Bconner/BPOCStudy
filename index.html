@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPOC Master Study Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#fbf8ee',
+                            100: '#f4ecd5',
+                            200: '#e8d7ab',
+                            300: '#dbbe7c',
+                            400: '#cfb069',
+                            500: '#c59b27',
+                            600: '#b08320',
+                            700: '#8e661b',
+                            800: '#75531d',
+                            900: '#62451c',
+                            950: '#38250e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c59b27;
+        }
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+            -webkit-perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col selection:bg-gold-500 selection:text-black">
+
+    <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-zinc-950 font-bold shadow-lg shadow-gold-500/20">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-gold-300 via-gold-400 to-amber-500 bg-clip-text text-transparent">BPOC Study Hub</h1>
+                    <p class="text-xs text-zinc-400">Basic Peace Officer Course Exam Prep</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="openTheftModal()" class="flex items-center space-x-2 bg-zinc-800/80 border border-zinc-700/60 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-300 hover:text-gold-400 transition shadow-inner">
+                    <i class="fa-solid fa-table text-gold-400"></i>
+                    <span>Theft Table</span>
+                </button>
+                <button onclick="openStatsModal()" class="text-zinc-400 hover:text-gold-400 transition p-2 rounded-lg hover:bg-zinc-800">
+                    <i class="fa-solid fa-chart-pie text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-zinc-900/60 border-b border-zinc-800 backdrop-blur sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto no-scrollbar">
+            <button onclick="switchTab('flashcards')" id="tab-flashcards" class="tab-btn flex items-center space-x-2 py-3 px-4 border-b-2 border-gold-500 text-gold-400 font-medium text-sm whitespace-nowrap transition">
+                <i class="fa-solid fa-clone"></i>
+                <span>Flashcards Grid</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn flex items-center space-x-2 py-3 px-4 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 font-medium text-sm whitespace-nowrap transition">
+                <i class="fa-solid fa-clipboard-question"></i>
+                <span>Practice Quiz</span>
+            </button>
+            <button onclick="switchTab('matching')" id="tab-matching" class="tab-btn flex items-center space-x-2 py-3 px-4 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 font-medium text-sm whitespace-nowrap transition">
+                <i class="fa-solid fa-puzzle-piece"></i>
+                <span>Matching Game</span>
+            </button>
+            <button onclick="switchTab('statue')" id="tab-statue" class="tab-btn flex items-center space-x-2 py-3 px-4 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 font-medium text-sm whitespace-nowrap transition">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Statute Sleuth</span>
+            </button>
+            <button onclick="switchTab('index')" id="tab-index" class="tab-btn flex items-center space-x-2 py-3 px-4 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 font-medium text-sm whitespace-nowrap transition">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>Study Index & Bookmarks</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- VIEW: FLASHCARDS GRID -->
+        <section id="view-flashcards" class="view-section space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-sm">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-gold-400"></i> Interactive Flashcard Grid
+                    </h2>
+                    <p class="text-sm text-zinc-400">Click any card to watch it fluidly flip and reveal its answer.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <select id="flashcard-category-filter" onchange="filterFlashcards()" class="bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm rounded-xl px-3 py-2 outline-none focus:border-gold-500">
+                        <option value="all">All Categories</option>
+                        <option value="Code of Criminal Procedure">Code of Criminal Procedure</option>
+                        <option value="Penal Code">Penal Code</option>
+                        <option value="Professional Policing">Professional Policing</option>
+                        <option value="Traffic">Traffic Laws</option>
+                        <option value="Constitutional Law">Constitutional Law</option>
+                        <option value="Force Options & Tactics">Force Options & Tactics</option>
+                        <option value="General & Administration">General & Administration</option>
+                    </select>
+                    <button onclick="revealAllCards(true)" class="bg-zinc-800 hover:bg-zinc-700 text-gold-400 text-xs font-semibold px-3 py-2 rounded-xl border border-zinc-700 transition">
+                        Flip All Over
+                    </button>
+                    <button onclick="revealAllCards(false)" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold px-3 py-2 rounded-xl border border-zinc-700 transition">
+                        Reset All Cards
+                    </button>
+                </div>
+            </div>
+
+            <div id="flashcards-grid-container" class="flashcard-grid"></div>
+        </section>
+
+        <!-- VIEW: PRACTICE QUIZ -->
+        <section id="view-quiz" class="view-section hidden space-y-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-sm max-w-3xl mx-auto">
+                <div id="quiz-setup" class="space-y-6">
+                    <div class="text-center space-y-2">
+                        <h2 class="text-2xl font-bold text-white">BPOC Practice Examination</h2>
+                        <p class="text-sm text-zinc-400">Test your mastery across Texas codes, peace officer standards, and midterm questions.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Select Category</label>
+                            <select id="quiz-category" class="w-full bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-xl p-3 text-sm focus:border-gold-500 outline-none">
+                                <option value="all">Comprehensive (All Topics)</option>
+                                <option value="Code of Criminal Procedure">Code of Criminal Procedure</option>
+                                <option value="Penal Code">Penal Code</option>
+                                <option value="Professional Policing">Professional Policing</option>
+                                <option value="Traffic">Traffic</option>
+                                <option value="Constitutional Law">Constitutional Law</option>
+                                <option value="Force Options & Tactics">Force Options & Tactics</option>
+                                <option value="General & Administration">General & Administration</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Question Count</label>
+                            <select id="quiz-count" class="w-full bg-zinc-800 border border-zinc-700 text-zinc-200 rounded-xl p-3 text-sm focus:border-gold-500 outline-none">
+                                <option value="50">50 Questions (Mastery)</option>
+                                <option value="100" selected>100 Questions (Comprehensive)</option>
+                                <option value="200">200 Questions (Marathon)</option>
+                                <option value="300">300 Questions (Ultimate Exam)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-zinc-950 font-bold py-3.5 rounded-xl shadow-lg shadow-gold-500/20 transition">
+                        Start Examination
+                    </button>
+                </div>
+
+                <div id="quiz-active" class="hidden space-y-6">
+                    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+                        <span id="quiz-progress-text" class="text-xs font-semibold text-gold-400 tracking-wider uppercase">Question 1 of 10</span>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-mono bg-zinc-800 px-3 py-1 rounded-full text-zinc-300">
+                                <span class="text-emerald-400">Right: <span id="quiz-right-count">0</span></span> | 
+                                <span class="text-rose-400">Wrong: <span id="quiz-wrong-count">0</span></span>
+                            </span>
+                            <span id="quiz-timer" class="text-xs font-mono bg-zinc-800 px-3 py-1 rounded-full text-zinc-300">0:00:00</span>
+                        </div>
+                    </div>
+                    <div id="quiz-question-box" class="space-y-4">
+                        <h3 id="quiz-question-text" class="text-lg font-semibold text-white leading-relaxed"></h3>
+                        <div id="quiz-options-list" class="space-y-3"></div>
+                    </div>
+                    <div class="flex justify-between pt-4 border-t border-zinc-800">
+                        <button onclick="quitQuiz()" class="text-xs text-zinc-400 hover:text-zinc-200 px-4 py-2 rounded-lg bg-zinc-800">Quit Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quiz-results" class="hidden text-center space-y-6 py-6">
+                    <div class="w-20 h-20 bg-gold-500/10 border-2 border-gold-500 text-gold-400 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-lg shadow-gold-500/10">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-bold text-white">Quiz Completed!</h3>
+                        <p id="quiz-score-summary" class="text-zinc-400 text-sm"></p>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="resetQuiz()" class="bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold px-6 py-3 rounded-xl text-sm transition">Try Again</button>
+                        <button onclick="switchTab('flashcards')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold px-6 py-3 rounded-xl text-sm transition">Back to Flashcards</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: MATCHING GAME -->
+        <section id="view-matching" class="view-section hidden space-y-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-sm max-w-4xl mx-auto">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-gold-400"></i> BPOC Concept Matching
+                        </h2>
+                        <p class="text-sm text-zinc-400">Match legal definitions with their correct terms.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span id="matching-timer" class="text-xs font-mono bg-zinc-800 px-3 py-1 rounded-full text-zinc-300">0:00:00</span>
+                        <button onclick="initMatchingGame()" class="bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold text-xs px-4 py-2 rounded-xl transition">New Game</button>
+                    </div>
+                </div>
+                <div id="matching-board" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6"></div>
+            </div>
+        </section>
+
+        <!-- VIEW: STATUTE SLEUTH -->
+        <section id="view-statue" class="view-section hidden space-y-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-sm max-w-3xl mx-auto space-y-6">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-gold-400"></i> Statute Sleuth
+                        </h2>
+                        <p class="text-sm text-zinc-400">Analyze the field scenario below and select the matching statute or legal principle.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-semibold bg-zinc-800 text-gold-400 px-3 py-1.5 rounded-xl border border-zinc-700/60" id="statue-score">Score: 0 / 0</span>
+                        <button onclick="initStatueGame()" class="bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold text-xs px-4 py-2 rounded-xl transition">Restart Deck</button>
+                    </div>
+                </div>
+                
+                <div id="statue-game-container" class="space-y-6"></div>
+            </div>
+        </section>
+
+        <!-- VIEW: STUDY INDEX & BOOKMARKS -->
+        <section id="view-index" class="view-section hidden space-y-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xl font-bold text-white">Study Index & Bookmarks</h2>
+                            <span id="index-term-counter" class="text-xs font-semibold px-2.5 py-1 bg-zinc-800 text-gold-400 rounded-lg border border-zinc-700/50">0 Terms</span>
+                        </div>
+                        <p class="text-sm text-zinc-400">Browse all terms or review your personal bookmarked flashcards.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="index-category-filter" onchange="renderIndex()" class="bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm rounded-xl px-3 py-2 outline-none focus:border-gold-500">
+                            <option value="all">All Categories</option>
+                            <option value="Code of Criminal Procedure">Code of Criminal Procedure</option>
+                            <option value="Penal Code">Penal Code</option>
+                            <option value="Professional Policing">Professional Policing</option>
+                            <option value="Traffic">Traffic Laws</option>
+                            <option value="Constitutional Law">Constitutional Law</option>
+                            <option value="Force Options & Tactics">Force Options & Tactics</option>
+                            <option value="Federal & Civil Rights">Federal & Civil Rights</option>
+                            <option value="General & Administration">General & Administration</option>
+                        </select>
+                        <input type="text" id="index-search" oninput="renderIndex()" placeholder="Search terms or laws..." class="bg-zinc-800 border border-zinc-700 text-zinc-200 text-sm rounded-xl px-4 py-2 outline-none focus:border-gold-500 w-52">
+                        <button onclick="toggleBookmarkFilter()" id="bookmark-filter-btn" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold px-4 py-2.5 rounded-xl border border-zinc-700 transition flex items-center gap-2">
+                            <i class="fa-solid fa-bookmark text-gold-400"></i> Bookmarks Only
+                        </button>
+                    </div>
+                </div>
+                <div id="index-list" class="divide-y divide-zinc-800 border-t border-b border-zinc-800 max-h-[600px] overflow-y-auto"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- STATS MODAL -->
+    <div id="stats-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-gold-400"></i> Study Statistics
+                </h3>
+                <button onclick="closeStatsModal()" class="text-zinc-400 hover:text-zinc-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-zinc-800/60 p-4 rounded-xl border border-zinc-700/50 text-center space-y-1">
+                    <span id="stat-cards-viewed" class="text-2xl font-bold text-gold-400">0</span>
+                    <p class="text-xs text-zinc-400">Flashcards Reviewed</p>
+                </div>
+                <div class="bg-zinc-800/60 p-4 rounded-xl border border-zinc-700/50 text-center space-y-1">
+                    <span id="stat-quizzes-taken" class="text-2xl font-bold text-gold-400">0</span>
+                    <p class="text-xs text-zinc-400">Quizzes Completed</p>
+                </div>
+                <div class="bg-zinc-800/60 p-4 rounded-xl border border-zinc-700/50 text-center space-y-1">
+                    <span id="stat-avg-score" class="text-2xl font-bold text-gold-400">0%</span>
+                    <p class="text-xs text-zinc-400">Avg Quiz Score</p>
+                </div>
+                <div class="bg-zinc-800/60 p-4 rounded-xl border border-zinc-700/50 text-center space-y-1">
+                    <span id="stat-bookmarks-count" class="text-2xl font-bold text-gold-400">0</span>
+                    <p class="text-xs text-zinc-400">Bookmarked Items</p>
+                </div>
+            </div>
+            <button onclick="closeStatsModal()" class="w-full bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold py-3 rounded-xl transition text-sm">Close Dashboard</button>
+        </div>
+    </div>
+
+    <!-- THEFT TABLE MODAL -->
+    <div id="theft-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full p-6 space-y-6 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-table text-gold-400"></i> Theft Table
+                </h3>
+                <button onclick="closeTheftModal()" class="text-zinc-400 hover:text-zinc-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-zinc-800 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Value Range</th>
+                            <th class="py-3 px-4">Classification</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800/60 text-sm">
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">&lt;$100</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">Class C Misdemeanor</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$100 - &lt;$750</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">Class B Misdemeanor</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$750 - &lt;$2,500</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">Class A Misdemeanor</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$2,500 - &lt;$30,000</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">State Jail Felony</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$30,000 - &lt;$150,000</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">3rd Degree Felony</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$150,000 - &lt;$300,000</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">2nd Degree Felony</td>
+                        </tr>
+                        <tr class="hover:bg-zinc-800/40 transition">
+                            <td class="py-3 px-4 text-zinc-200">$300,000+</td>
+                            <td class="py-3 px-4 text-gold-400 font-medium">1st Degree Felony</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button onclick="closeTheftModal()" class="w-full bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold py-3 rounded-xl transition text-sm">Close Table</button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-zinc-900 border border-gold-500/40 text-zinc-100 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-gold-400"></i>
+        <span id="toast-msg" class="text-sm font-medium">Notification message</span>
+    </div>
+
+    <script>
+        const bpocData = [
+            { id: 1, category: "Federal & Civil Rights", q: "Who investigates civil rights violations?", a: "The Federal Bureau of Investigation (FBI) alongside the Department of Justice (DOJ) Civil Rights Division investigates color of law violations (Title 18 U.S.C. Section 242) and hate crimes." },
+            { id: 2, category: "Penal Code", q: "PC 39.03 Official Oppression Under Color of Law", a: "A public servant acting under color of office commits a Class A misdemeanor (unless the offense is sexual harassment, which can be a state jail felony) by intentionally subjecting another to mistreatment, arrest, detention, search, or seizure knowing it is unlawful." },
+            { id: 3, category: "Professional Policing", q: "Define Objectivity", a: "An absolute standard of professional neutrality requiring an officer to make decisions based strictly on evidence, facts, and law, completely uninfluenced by emotion, personal bias, opinion, or prejudice." },
+            { id: 4, category: "Federal & Civil Rights", q: "Title 18, Section 242", a: "A federal criminal statute carrying penalties ranging from a misdemeanor up to life imprisonment or the death penalty if bodily injury or death results from willfully depriving a person of constitutional rights under color of law." },
+            { id: 5, category: "Professional Policing", q: "SARA Model", a: "Scanning, Analysis, Response, and Assessment" },
+            { id: 6, category: "Professional Policing", q: "Traditional police model", a: "A reactive, incident-driven approach characterized by random motorized patrol, rapid response times to citizen calls for service, and retroactive criminal investigations." },
+            { id: 7, category: "General & Administration", q: "Texas Constitution – Art. 5, Sec. 23", a: "Establishes the constitutional office of the Sheriff in each of Texas's 254 counties, mandating an elected term of 4 years." },
+            { id: 8, category: "Professional Policing", q: "Crime Prevention and narcotics investigator", a: "Proactive policing models relying on specialized tactical interdiction, intelligence gathering, confidential source operation, and high-visibility deterrence to stop crimes before execution." },
+            { id: 9, category: "General & Administration", q: "Wellness Defined", a: "The condition of the human organism that consists of its health and disease status and risk potential" },
+            { id: 10, category: "General & Administration", q: "Minerals – what are they?", a: "Naturally occurring inorganic solid elements or compounds possessing a crystalline structure and definite chemical composition (tested as part of basic environmental/scientific fundamentals)." },
+            { id: 11, category: "General & Administration", q: "Number of Rounds for handgun qualification", a: "TCOLE minimum standards require a mandatory course of fire consisting of 50 rounds fired from ranges varying from point-blank up to 15 yards." },
+            { id: 12, category: "General & Administration", q: "Passing score for handgun qualification", a: "A minimum passing score of 70%, which mathematically requires achieving at least 175 points out of a total possible 250 points." },
+            { id: 13, category: "General & Administration", q: "Continuing education hours", a: "TCOLE mandated training cycles requiring licensees to complete designated credit hours every 24-month training unit and fulfill comprehensive requirements every 48-month training period (cycle)." },
+            { id: 14, category: "General & Administration", q: "Days to notify TCOLE of arrest", a: "A licensed peace officer must report any indictment, arrest, or conviction (above a Class C misdemeanor) to TCOLE within strict administrative limits—specifically within 30 days of the event." },
+            { id: 15, category: "General & Administration", q: "What happens to your license if you don't do training hours?", a: "Failure to complete mandated continuing education results in license suspension, administrative penalties, and the immediate prohibition against exercising police authority." },
+            { id: 16, category: "Professional Policing", q: "Define Race", a: "A social classification system grouping people together based on shared physical characteristics, geographic ancestry, and phenotypic traits." },
+            { id: 17, category: "Professional Policing", q: "Define Discrimination", a: "Unequal or differential treatment of individuals or groups based on their identity, protected class, or group membership rather than individual merit." },
+            { id: 18, category: "Professional Policing", q: "Define Prejudice", a: "A rigid, preconceived emotional attitude or judgment toward a person or group formed without factual evidence or rational inquiry." },
+            { id: 19, category: "Professional Policing", q: "Define Attitude", a: "An enduring cognitive orientation and emotional feeling that directly dictates how an officer behaves and communicates during public contacts." },
+            { id: 20, category: "Professional Policing", q: "Define Ethnocentrism", a: "The psychological bias of evaluating other cultures exclusively from the perspective and standards of one's own native culture, assuming its inherent superiority." },
+            { id: 21, category: "Constitutional Law", q: "Define Racial Profiling", a: "Law enforcement action initiated solely on the basis of an individual's race, ethnicity, or national origin rather than actionable behavior, description, or probable cause (prohibited explicitly under CCP Article 2.131)." },
+            { id: 22, category: "Constitutional Law", q: "Whren v. U.S.", a: "U.S. Supreme Court ruling establishing that a temporary motor vehicle detention based on probable cause of a traffic violation is objectively reasonable under the 4th Amendment, regardless of the officer's underlying subjective intent." },
+            { id: 23, category: "Code of Criminal Procedure", q: "Writ of Habeas Corpus", a: "A fundamental constitutional writ (CCP Chapter 11) commanding a custodian to bring an imprisoned or restrained person before a court to test the legal validity of the detention." },
+            { id: 24, category: "Constitutional Law", q: "6th Amendment", a: "Guarantees criminal defendants the right to a speedy and public trial by an impartial jury, the right to confront accusers, the right to compulsory process for witnesses, and the right to legal counsel." },
+            { id: 25, category: "Code of Criminal Procedure", q: "District Court", a: "The primary Texas trial court of general jurisdiction possessing exclusive original jurisdiction over all felony criminal matters, divorces, and title to land disputes." },
+            { id: 26, category: "Code of Criminal Procedure", q: "County Court", a: "Courts handling intermediate criminal cases (Class A and Class B misdemeanors, which carry potential jail sentences) and civil cases with specified monetary ranges." },
+            { id: 27, category: "Constitutional Law", q: "8th Amendment", a: "Constitutional prohibition against imposing excessive bail, excessive fines, and cruel and unusual punishments." },
+            { id: 28, category: "Constitutional Law", q: "10th Amendment", a: "Establishes federalism by reserving all powers not explicitly delegated to the federal government to the individual states or the people." },
+            { id: 29, category: "Constitutional Law", q: "5th Amendment", a: "Establishes protections against self-incrimination, double jeopardy, guarantees due process of law, and requires grand jury indictments for capital offenses." },
+            { id: 30, category: "Constitutional Law", q: "4th Amendment", a: "Protects citizens against unreasonable searches and seizures, requiring that all warrants be backed by probable cause supported by oath or affirmation." },
+            { id: 31, category: "Code of Criminal Procedure", q: "3 parts of criminal justice system", a: "The operational triad of Law Enforcement (investigative/preventative), Courts (adjudication), and Corrections (punishment/rehabilitation)." },
+            { id: 32, category: "Code of Criminal Procedure", q: "Define Bail", a: "Security given by an accused defendant to guarantee future appearance before the proper court for legal proceedings." },
+            { id: 33, category: "Code of Criminal Procedure", q: "Define Civil Law", a: "The body of law regulating private rights, contracts, property disputes, and torts between individuals or corporations, where the remedy is financial compensation rather than criminal penal sanctions." },
+            { id: 34, category: "Code of Criminal Procedure", q: "Who are magistrates?", a: "Judicial officers defined under CCP Article 2.09 (including Supreme Court justices, judges, appellate judges, district judges, county judges, justices of the peace, and municipal judges) empowered to issue warrants and conduct arraignments." },
+            { id: 35, category: "Code of Criminal Procedure", q: "Court of Criminal Appeals", a: "The highest appellate court in Texas possessing exclusive, final appellate jurisdiction over all criminal cases, including mandatory review of death penalty sentences." },
+            { id: 36, category: "Penal Code", q: "Affirmative Defense", a: "A defense where the defendant admits the underlying act but presents legal justifications (such as duress or mistake of fact) that completely excuse liability, typically requiring proof by a preponderance of the evidence." },
+            { id: 37, category: "Penal Code", q: "Define Electric Utility Substation (Penal Code)", a: "Specifically designated critical infrastructure facilities protected under Texas penal law where unauthorized entry or property damage carries severe felony grading enhancements (PC 1.07 Definitions)." },
+            { id: 38, category: "Penal Code", q: "Elements of an offense", a: "The five mandatory components the state must prove beyond a reasonable doubt: 1. Actus reus (prohibited act), 2. Mens rea (culpable mental state), 3. Causation, 4. Resulting harm, and 5. Concurrence." },
+            { id: 39, category: "Penal Code", q: "PC 1.07 Define Confinement Facility", a: "A jail, prison, or specialized facility operated by or under contract with a government unit to securely house persons accused or convicted of crimes." },
+            { id: 40, category: "Penal Code", q: "Burden of Proof", a: "The legal duty resting on the state to establish every single element of a charged crime beyond a reasonable doubt." },
+            { id: 41, category: "Penal Code", q: "PC 6.034 culpable mental states", a: "Intentional (conscious objective), Knowingly (practical certainty of results), Recklessly (conscious disregard of a substantial and unjustifiable risk), and Criminal Negligence (gross deviation from the standard of care by failing to perceive a risk)." },
+            { id: 42, category: "Penal Code", q: "PC 7.01 Criminal responsibility", a: "Defines parties to an offense, accountability, and co-conspirator liability." },
+            { id: 43, category: "Penal Code", q: "PC 8.05 Define Duress", a: "An affirmative defense where an actor commits an offense because they were coerced by explicit threats of imminent death or serious bodily injury." },
+            { id: 44, category: "Penal Code", q: "PC 8.02 Define Mistake of Fact", a: "An affirmative defense where the actor held a reasonable mistaken belief about a factual matter that negates the required mental state." },
+            { id: 45, category: "Penal Code", q: "PC 49.02 Public Intoxication", a: "Appearing in a public place while intoxicated to the degree that the person may endanger themselves or another (Class C misdemeanor)." },
+            { id: 46, category: "Penal Code", q: "PC 19.03 Capital Murder", a: "Murder elevated by statutory aggravating factors (e.g., killing a peace officer, multiple victims, murder for hire, killing during a kidnapping or robbery)." },
+            { id: 47, category: "Penal Code", q: "PC 20.04 Aggravated Kidnapping", a: "Abducting another person with intent to hold for ransom, use as a shield, inflict bodily injury, or interfere with a governmental function (First-degree felony)." },
+            { id: 48, category: "Penal Code", q: "PC 36.06 Obstruction or Retaliation", a: "Intentionally or knowingly harming or threatening a public servant or witness in retaliation for their official duties." },
+            { id: 49, category: "Penal Code", q: "PC 29.02 Robbery", a: "Committing theft while intentionally, knowingly, or recklessly causing bodily injury or threatening imminent bodily injury (Second-degree felony)." },
+            { id: 50, category: "Penal Code", q: "PC 29.03 Aggravated Robbery", a: "Robbery committed with a deadly weapon, causing serious bodily injury, or targeting elderly/disabled victims (First-degree felony)." },
+            { id: 51, category: "Penal Code", q: "PC 30.02 Burglary", a: "Entering a habitation, building, or vehicle without consent with intent to commit a felony, theft, or assault." },
+            { id: 52, category: "Penal Code", q: "PC 31.03 Theft", a: "Unlawful appropriation of property with intent to deprive the owner, graded from a Class C misdemeanor up to a first-degree felony based on monetary value." },
+            { id: 53, category: "Penal Code", q: "PC 32.47 Destruction, Removal, or Concealment of Writing", a: "Intentionally tampering with or destroying public records, legal notices, or vehicle identification numbers." },
+            { id: 54, category: "Penal Code", q: "PC 32.31 Credit Card or Debit Card Abuse", a: "Presenting or possessing a credit card without effective consent with intent to defraud." },
+            { id: 55, category: "Penal Code", q: "PC 42.05 Disrupting Meeting or Procession", a: "Intentionally disrupting a lawful meeting, school class, or religious assembly (Class B misdemeanor)." },
+            { id: 56, category: "Penal Code", q: "PC 43.03 Promotion of Prostitution", a: "Operating or facilitating prostitution enterprises (State jail or third-degree felony)." },
+            { id: 57, category: "Penal Code", q: "PC 47.03 Gambling Promotion", a: "Operating a gambling place, bookmaking, or maintaining gambling devices for profit (Class A misdemeanor)." },
+            { id: 58, category: "Penal Code", q: "PC 1.07 Deadly weapon defined", a: "A firearm or any object manifestly designed, made, or adapted for the purpose of inflicting death or serious bodily injury; or any item used in a manner capable of causing death or serious bodily injury." },
+            { id: 59, category: "Penal Code", q: "PC 46.02 Unlawful Carrying Weapons", a: "Carrying handguns, clubs, or illegal knives outside allowed statutory parameters or locations." },
+            { id: 60, category: "Penal Code", q: "PC 20.02 Unlawful Restraint", a: "Intentionally or knowingly restraining another person unlawfully, interfering substantially with their liberty (Class A misdemeanor)." },
+            { id: 61, category: "Penal Code", q: "PC 20.03 Kidnapping", a: "Intentionally or knowingly abducting another person (Third-degree felony)." },
+            { id: 62, category: "Penal Code", q: "PC 21.11 Indecency with a child", a: "Engaging in sexual contact or exposure with a child younger than 17 years old (Second-degree felony)." },
+            { id: 63, category: "Penal Code", q: "PC 22.01 Assault", a: "Intentionally, knowingly, or recklessly causing bodily injury, threat of injury, or offensive physical contact (graded from Class C to Felony)." },
+            { id: 64, category: "Penal Code", q: "PC 19.02 Murder", a: "Intentionally or knowingly causing death, or intending serious bodily injury and committing an act clearly dangerous to human life causing death (First-degree felony)." },
+            { id: 65, category: "Penal Code", q: "PC 19.04 Manslaughter", a: "Recklessly causing the death of an individual (Second-degree felony)." },
+            { id: 66, category: "Penal Code", q: "PC 49.08 Intoxication Manslaughter", a: "Operating a motor vehicle while intoxicated and causing the death of another by accident or mistake (Second-degree felony)." },
+            { id: 67, category: "Penal Code", q: "PC 46.01 Short-barrel firearm definition", a: "A rifle with a barrel length under 16 inches, a shotgun with a barrel length under 18 inches, or an overall length under 26 inches." },
+            { id: 68, category: "Penal Code", q: "PC 46.05 Prohibited Weapons", a: "Unlawful possession of explosive weapons, machine guns, short-barrel firearms, armor-piercing ammunition, or knuckles." },
+            { id: 69, category: "Penal Code", q: "PC 49.031 Open Container", a: "Possessing an open container of alcohol in the passenger area of a motor vehicle on a public highway (Class C misdemeanor)." },
+            { id: 70, category: "Penal Code", q: "PC 37.01 Definitions", a: "Definitions for Perjury, Aggravated Perjury, and Tampering with Governmental Records." },
+            { id: 71, category: "Penal Code", q: "PC 48.01 Smoking Tobacco", a: "Legal restrictions and prohibitions regarding smoking tobacco in designated public buildings, elevators, and public schools." },
+            { id: 72, category: "Penal Code", q: "PC 25.03 Interference with Child Custody", a: "Taking or retaining a child outside the scope of a court custody order (State jail felony)." },
+            { id: 73, category: "Penal Code", q: "PC 8.06 Define Entrapment", a: "An affirmative defense where law enforcement induced an otherwise innocent person to commit a crime using overbearing persuasion." },
+            { id: 74, category: "Penal Code", q: "PC 39.03 Official Oppression", a: "Public servant acting under color of office who subjects another to unlawful mistreatment or arrest." },
+            { id: 75, category: "Code of Criminal Procedure", q: "P.C. 38.01 / Escape defined", a: "The unauthorized departure from custody of a peace officer or correctional facility (graded from misdemeanor to felony based on the underlying offense)." },
+            { id: 76, category: "Code of Criminal Procedure", q: "Objectives of the CCP", a: "Outlined in CCP Article 1.03: to adopt measures for preventing crime, exclude offenders from escape, ensure a rapid trial, bring about investigation, and secure a fair trial." },
+            { id: 77, category: "General & Administration", q: "Number of railroad peace officers", a: "Commissioned specialized peace officers appointed by the state safety director under specific corporate agreements to protect railroad properties, cargo, and passengers (not more than 250 per railroad company active state-wide)." },
+            { id: 78, category: "Code of Criminal Procedure", q: "Who are special investigators?", a: "Designated federal agents (FBI, DEA, ATF) and select state investigators under CCP Article 2.122 who possess specific federal/state statutory arrest powers." },
+            { id: 79, category: "General & Administration", q: "Tribes in Texas – peace officers", a: "Recognition of specific tribal authority and jurisdiction for designated Native American tribal police units operating within Texas borders under federal/state coordination." },
+            { id: 80, category: "Code of Criminal Procedure", q: "CCP 8.01: Officer may require aid", a: "Empowers a sheriff, constable, or peace officer to command any county citizens (posse comitatus) to assist in overcoming resistance to lawful execution of orders." },
+            { id: 81, category: "Code of Criminal Procedure", q: "CCP 2.29: Report required concerning human trafficking", a: "Mandates that local law enforcement agencies compile, document, and submit mandatory human trafficking data reports to state repositories." },
+            { id: 82, category: "Code of Criminal Procedure", q: "CCP 2.17: Duty of sheriffs", a: "Mandates that a county sheriff take custody of prisoners committed to jail by a magistrate or court and safely keep them until discharged by law." },
+            { id: 83, category: "General & Administration", q: "Number of special rangers Texas/Southwestern Cattle Raisers", a: "Historically and structurally maintained at approximately no more than 50 commissioned special rangers stationed strategically throughout Texas and Oklahoma specializing in livestock theft and agricultural crimes." },
+            { id: 84, category: "Code of Criminal Procedure", q: "CCP 2.13: Duties and powers of peace officers", a: "Mandates officers to intervene, prevent crimes, suppress nuisances, and preserve public peace within their jurisdiction." },
+            { id: 85, category: "Code of Criminal Procedure", q: "Duties at Family Violence call", a: "Mandates checking for injuries, identifying the predominant aggressor, preparing a comprehensive written report, and providing the victim with mandatory written notice of legal rights and emergency shelter resources (CCP Article 5.04)." },
+            { id: 86, category: "Code of Criminal Procedure", q: "CCP 15.04: Complaint defined", a: "A sworn written affidavit made before a magistrate or district/county attorney charging an individual with a specific criminal offense." },
+            { id: 87, category: "Penal Code", q: "Reasonable belief defined (P.C. 1.07)", a: "A belief that would be held by an ordinary and prudent person under the exact same circumstances." },
+            { id: 88, category: "Constitutional Law", q: "Beyond reasonable doubt defined", a: "The highest standard of proof in American jurisprudence, where evidence is so convincing that it leaves no logical doubt of the defendant's guilt." },
+            { id: 89, category: "Professional Policing", q: "3 interactions with police officers", a: "1. Consensual encounters (voluntary communication, no seizure), 2. Temporary detentions (investigative stops backed by reasonable suspicion), 3. Arrests (full seizures backed by probable cause)." },
+            { id: 90, category: "Constitutional Law", q: "Mere suspicion", a: "An unarticulated hunch, intuition, gut feeling, or suspicion without objective supporting facts; legally insufficient to justify any detention or seizure. Can run plates or begin consensual police-citizen encounters." },
+            { id: 91, category: "Code of Criminal Procedure", q: "CCP 11.22: Restraint defined", a: "The kind of control exercised by one person over another, encompassing general restrictions on liberty even without total physical confinement." },
+            { id: 92, category: "Code of Criminal Procedure", q: "CCP 11.21: Confinement defined", a: "Physical custody, actual imprisonment, or total restraint of a person's liberty." },
+            { id: 93, category: "Code of Criminal Procedure", q: "CCP 14.05.1: Warrantless entry into a residence", a: "Permits officers to enter a home without a warrant under verified exigent circumstances (hot pursuit, medical emergency, destruction of evidence)." },
+            { id: 94, category: "Code of Criminal Procedure", q: "CCP 18.07: Execution of search warrants", a: "Search warrants must be executed within 3 whole days, excluding the day of issuance and the day of execution." },
+            { id: 95, category: "Code of Criminal Procedure", q: "Arrest warrant defined", a: "A written order from a magistrate directed to a peace officer commanding them to arrest a specified accused person for a stated offense, valid anywhere in the State of Texas." },
+            { id: 96, category: "Constitutional Law", q: "Miranda v. Arizona", a: "Supreme Court landmark ruling establishing that procedural warnings (rights to silence and counsel) must be given prior to any custodial interrogation." },
+            { id: 97, category: "Code of Criminal Procedure", q: "CCP 14.03: Authority of peace officers", a: "Authority of peace officers to make warrantless arrests in specific scenarios (public intoxication, preventing consequences of theft, breaches of the peace, family violence)." },
+            { id: 98, category: "Code of Criminal Procedure", q: "Felony arrest authority", a: "Authority to arrest for a felony based on probable cause, whether committed within view or upon credible information provided by reliable sources." },
+            { id: 99, category: "Code of Criminal Procedure", q: "CCP 14.01: Offense within view", a: "Any person (including private citizens and peace officers) may arrest an offender without a warrant for any felony or breach of the peace committed within their presence or view." },
+            { id: 100, category: "Constitutional Law", q: "U.S. v. Carroll", a: "The 'Automobile Exception' – motor vehicles may be searched without a warrant if officers have probable cause due to the vehicle's inherent mobility." },
+            { id: 101, category: "Code of Criminal Procedure", q: "Temporary detention – identity and defined", a: "A brief investigative seizure based on reasonable articulable suspicion supported by specific, objective facts connecting a person to criminal activity." },
+            { id: 102, category: "Constitutional Law", q: "Chimel v. California / CCP 18.01", a: "Search incident to arrest is strictly limited to the suspect's immediate control area (wingspan) to protect officer safety." },
+            { id: 103, category: "Code of Criminal Procedure", q: "Define Search Warrant – Reasonable Ground", a: "A written judicial order issued upon probable cause authorizing law enforcement to search and seize specific property, items, or persons." },
+            { id: 104, category: "Code of Criminal Procedure", q: "CCP 18.16: Preventing consequences of theft", a: "Authorizes private citizens and peace officers to seize stolen property and capture the offender to bring them before a magistrate." },
+            { id: 105, category: "Code of Criminal Procedure", q: "CCP 14.02: Execution of arrest warrant", a: "When an arrest warrant has been issued, a peace officer may execute that warrant and arrest the named suspect anywhere within the State of Texas." },
+            { id: 106, category: "Constitutional Law", q: "Probable Cause defined (CCP / Case Law)", a: "Facts and circumstances within an officer's knowledge and of which they have trustworthy information sufficient in themselves to warrant a belief by a person of reasonable caution that a crime is being committed." },
+            { id: 107, category: "Code of Criminal Procedure", q: "Constructive Custody defined", a: "The establishment of control and submission to police authority without the actual physical application of handcuffs or physical restraints." },
+            { id: 108, category: "Code of Criminal Procedure", q: "Protective orders", a: "Judicial civil or criminal orders issued to protect victims of family violence, dating violence, or stalking by ordering the offender to maintain specific distance." },
+            { id: 109, category: "Constitutional Law", q: "Steagald v. United States", a: "Law enforcement generally requires a search warrant (in addition to an arrest warrant) to enter a third party's private residence to arrest a suspect, absent valid consent or exigent circumstances." },
+            { id: 110, category: "Constitutional Law", q: "Terry v. Ohio", a: "Established the stop-and-frisk doctrine; permits a brief investigative detention and an outer-clothing pat-down for weapons based on reasonable suspicion that the subject is armed and dangerous." },
+            { id: 111, category: "Code of Criminal Procedure", q: "Define Capias", a: "A judicial writ issued by a court or magistrate directing any peace officer to arrest a defendant after indictment or conviction and bring them before the court." },
+            { id: 112, category: "Traffic", q: "TC 545.056 Driving Leftof Center of Roadway: Limitations Other Than Passing", a: "An operator may not drive on the left side of the roadway if approaching within 100 feet of an intersection, railroad crossing, bridge, viaduct, tunnel, or waiting on a ferry." },
+            { id: 113, category: "Traffic", q: "TC 545.104 Signaling Turns; Use of Turn Signals", a: "An operator shall use the signal authorized by Section 545.106 to indicate an intention to turn, change lanes, or start from a parked position. An operator intending to turn a vehicle right or left shall signal continuously for not less than the last 100 feet of movement of the vehicle before the turn." },
+            { id: 114, category: "Traffic", q: "TC 541.201 Truck Definition", a: "Means a motor vehicle designed, used, or maintained primarily to transport property" },
+            { id: 115, category: "Traffic", q: "TC 541.201 Farm Tractor Definition", a: "Means a motor vehicle designed and used primarily as a farm implement to draw an implement of husbandry, including a plow or a mowing machine" },
+            { id: 116, category: "Traffic", q: "TC 541.201 Special Motor Vehicle Definition", a: "Means a vehicle that is not designed or used primarily to transport persons or property and that is only incidentally operated on a highway (ditch diggers, well-boring apparatus)." },
+            { id: 117, category: "Traffic", q: "TC 502.407 Operation of Vehicle With Expired License Plate", a: "A person commits an offense if, after the fifth working day after the date the registration for the vehicle expires the person operates a motor vehicle, trailer, or semitrailer on a public highway during a registration period that has attached to it a license plate for the preceding period" },
+            { id: 118, category: "Traffic", q: "TC 541.302 Freeway Definition", a: "A divided, controlled-access highway for through traffic." },
+            { id: 119, category: "Traffic", q: "TC 541.302 Improved Shoulder", a: "Means a paved shoulder" },
+            { id: 120, category: "Traffic", q: "TC Daytime and Nighttime hours", a: "Statutory definitions for vehicle lighting: daytime spans from 30 minutes before sunrise to 30 minutes after sunset; nighttime covers all other times requiring illuminated headlamps." },
+            { id: 121, category: "Traffic", q: "TC 556.021 Personal Injury", a: "Statutory duties of drivers involved in highway traffic collisions resulting in injury or death to stop, render aid, and exchange information." },
+            { id: 122, category: "Traffic", q: "TC 552.005 Unmarked Crosswalk", a: "A pedestrian shall yield the right-of-way to a vehicle on the highway if crossing a roadway at a place other than in a marked crosswalkor in an unmarked crosswalk at an intersection." },
+            { id: 123, category: "Traffic", q: "TC 545.251 Obedience to Signal Indicating Approach of Train or Other on-Track Equipment", a: "An operator approaching a railroad grade crossing shall stop not closer than 15 feet or farther than 50 feet from the nearest rail if a clearly visible railroad signal warns of the approach of a railroad train or other on-track equipment, a crossing gate is lowered, or a train emits an audible signal from a distance of approximately 1,500 feet" },
+            { id: 124, category: "Traffic", q: "TC 545.302 Stopping, Standing, or parking Prohibited in Certain Places", a: "An operator may not stop, stand, or park a vehicle on the roadway side of a vehicle stopped or parked at the edge or curb of a street; on a sidewalk, in an intersection, on a crosswalk. An operator may stop momentarily to pick up or discharge passangers in front of a private driveway, within 15 feet of a fire hydrant,within 20 feet of a crosswalk at an intersection, within 30 feet on the approach to a flashing signal, stop sign, yield sign, or traffic-control signal located at the side of a roadway" },
+            { id: 125, category: "Traffic", q: "TC 545.106 Signals by Hand & Arm Signal or Signal Lamp", a: "Except as provided by Subsection (b), an operator required to give a stop or turn signal shall do so by using the hand & arm; or lighting signal lamps approved by the department" },
+            { id: 126, category: "Traffic", q: "TC 545.351 Maximum Speed Requirement", a: "Operators must drive at a speed that is reasonable and prudent under existing conditions, hazards, traffic, and weather." },
+            { id: 127, category: "Traffic", q: "TC 547.331 Hazard Lamps Permitted", a: "A vehicle may be equipped with lamps to warn other vehicle operators of a vehicular traffic hazard that requires unusual care in approaching, overtaking, or passing; shall be mounted at the same level and spaced as widely apart as practicable on the front and rear of the vehicle; visible at a distance of at least 500 feet." },
+            { id: 128, category: "Traffic", q: "TC 547.324 Turn Signal Lamps Required", a: "shall be mounted at the same level and spaced as widely apart as practicable on the front and on the rear of the vehicle; shall emit a color between white and amber if mounted on the front and between red and amber if mounted on the rear; must be visible from a distance of 500 feet if the vehicle is 80 inches wide or more and 300 feet if less than 80 inces wide." },
+            { id: 129, category: "Traffic", q: "TC 547.325 Reflectors Required", a: "Except as provided by Subchapter F, a motor vehicle, trailer, semitrailer, or pole trailer shall be equipped with at least two red reflectors on the rear of the vehicle.  A red reflector may be included as a part of a taillamp." },
+            { id: 130, category: "Traffic", q: "TC 545.407 Following too closely", a: "Maintaining an assured clear distance between two vehicles where considering speed and conditions, operator can safely stop without colliding." },
+            { id: 131, category: "Traffic", q: "TC 547.613 Restrictions on Windows", a: "If the person operates a motor vehicle that has an object or material that is placed on or attached to the windshield or side or rear window and that obstructs or reduces the operator's clear view. Window tint is authorized with a light transmission of 25 percent or more." },
+            { id: 132, category: "Professional Policing", q: "Crisis Reaction – defined Crime Victims", a: "The immediate psychological and physiological responses (shock, denial, panic, hypervigilance) experienced by victims following a traumatic crime." },
+            { id: 133, category: "Professional Policing", q: "Trigger events – defined Crime Victims", a: "Specific sensory stimuli, dates, locations, or environments that reactivate trauma and stress symptoms in crime victims." },
+            { id: 134, category: "Professional Policing", q: "Reconstruction of Equilibrium – Crime Victims", a: "The psychological and emotional recovery process where a victim stabilizes, processes trauma, and restores emotional balance after a crisis." },
+            { id: 135, category: "Traffic", q: "T.C. 681.002 Disabled", a: "Regulations concerning parking privileges and proper display of disabled parking placards and license plates." },
+            { id: 136, category: "Traffic", q: "T.C. 683.002 Abandoned Motor Vehicle", a: "For the purposes of this chapter, a motor vehicle is abandoned if the motor vehicle is inoperable, more than five years old, and has been left unattended on public property for more than 48 hours; remained illegally on public property for more than 48 hours; remained on private property without consent for more than 48 hours." },
+            { id: 137, category: "Traffic", q: "T.C. 503.063 Deler Issued Plates", a: "A temporary license plate issued to a vehicle described by Subsection (i) is valid for 60 days." },
+            { id: 138, category: "Traffic", q: "T.C. 601.121 Surety Bond defined", a: "Financial responsibility compliance mechanism established via corporate surety bonds filed with the state to meet liability requirements." },
+            { id: 139, category: "Traffic", q: "T.C. Highway or street defined", a: "The width between the boundary lines of a publicly maintained way any part of which is open to the public for vehicular travel." },
+            { id: 140, category: "Traffic", q: "T.C. 545.059 One way roadways/Rotary Traffic Islands", a: "On a roadway that is designated and on which signs are erected for one-way traffic, an operator shall drive only in the direction indicated; An operator moving around a rotary traffic island shall drive only to the right of the island." },
+            { id: 141, category: "Traffic", q: "T.C. 545.054 Passing to the left, safe distance", a: "Operator may not drive on left unless clearly visible and free of approaching traffic, and must return before coming within 200 feet of an approaching vehicle." },
+            { id: 142, category: "Traffic", q: "T.C. 545.414 Riding in Open beds", a: "A person commits an offense if the person operates an open-bed pickup truck or open flatbed when a child younger than 18 years old is occupying the bed." },
+            { id: 143, category: "Traffic", q: "T.C. 547.353 Color Requirements", a: "A clearance lamp, sidemarker, or reflector mounted to the front must reflect amber; mounted to the rear must reflect red." },
+            { id: 144, category: "Penal Code", q: "HSC 365.012 – Illegal Dumping", a: "Discarding solid waste exceeding designated weights or hazardous materials within 300 feet of a public highway or body of water." },
+            { id: 145, category: "Professional Policing", q: "Adverb defined", a: "A part of speech used to modify verbs, adjectives, or other adverbs (essential for precise, objective police report writing)." },
+            { id: 146, category: "Professional Policing", q: "Define Predicate", a: "The grammatical part of a sentence that expresses what is stated about the subject, containing the active verb and object." },
+            { id: 147, category: "Professional Policing", q: "Field notes advantages and defined", a: "Concise, handwritten notes taken by officers during investigations to guarantee accuracy, recall, and credibility in formal reports and court testimony." },
+            { id: 148, category: "Professional Policing", q: "Chronological resolution", a: "Organizing information or events in exact sequence order during verbal communication and report writing." },
+            { id: 149, category: "Professional Policing", q: "Conflict resolution", a: "Verbal de-escalation techniques, active listening, and tactical communication strategies used to defuse disputes safely." },
+            { id: 150, category: "Professional Policing", q: "5 universal truths (Tactical Communication)", a: "1. All people want to be treated with respect, 2. People would rather be asked than told, 3. People want to know why, 4. People want options rather than threats, 5. People want a second chance when they make mistakes." },
+            { id: 151, category: "Code of Criminal Procedure", q: "Define Arrest Warrant", a: "A formal written order issued by a magistrate commanding a peace officer to arrest a named defendant." },
+            { id: 152, category: "Code of Criminal Procedure", q: "Which court is over Class C misdemeanors and ordinances?", a: "Municipal Courts and Justice of the Peace (JP) Courts." },
+            { id: 153, category: "Code of Criminal Procedure", q: "CCP 4.12 (a)(1) – J.P. courts", a: "Establishes Justice of the Peace court jurisdiction over criminal misdemeanor cases punishable by fine only (Class C misdemeanors) and local municipal/county ordinance violations." },
+            { id: 154, category: "Professional Policing", q: "Emotional Intelligence defined", a: "The ability to identify, understand, manage, and regulate one's own emotions while effectively reading and navigating the emotions of others." },
+            { id: 155, category: "General & Administration", q: "Battle of San Jacinto", a: "The decisive battle fought on April 21, 1836, where the Texian Army defeated General Antonio López de Santa Anna's Mexican forces, securing Texas independence." },
+            { id: 156, category: "Professional Policing", q: "Define Empathy", a: "The cognitive and emotional capacity to understand another person's feelings, perspective, and situation from their point of view without necessarily agreeing with it." },
+            { id: 157, category: "Federal & Civil Rights", q: "42 USC Sec. 1983", a: "Federal civil rights statute permitting individuals to file civil lawsuits against state and local government actors and police officers for constitutional rights violations committed under color of law." },
+            { id: 158, category: "Force Options & Tactics", q: "P.C. 9.61", a: "Parent-child use of force justification standards regarding corporal discipline." },
+            { id: 159, category: "Force Options & Tactics", q: "P.C. 9.34", a: "Protection of life or health justification rules permitting emergency physical intervention to prevent serious injury or death." },
+            { id: 160, category: "Force Options & Tactics", q: "Deadly Force defined (P.C. 9.01)", a: "Force that is intended or known by the actor to cause, or in the manner of its use or intended use is capable of causing, death or serious bodily injury." },
+            { id: 161, category: "Force Options & Tactics", q: "P.C. 9.04: Threats as justifiable force", a: "The verbal threat of force is fully justified whenever the actual use of that force is justified under the law." },
+            { id: 162, category: "Force Options & Tactics", q: "P.C. 9.06: Civil remedies unaffected", a: "Statutory criminal justification defenses do not eliminate or impair civil liability remedies in tort law." },
+            { id: 163, category: "Force Options & Tactics", q: "P.C. 9.05: Reckless injury of innocent third parties", a: "A justification defense is legally unavailable if the actor was reckless or negligent toward innocent bystanders while using force." },
+            { id: 164, category: "Force Options & Tactics", q: "P.C. 9.62", a: "Educator-student / Parent-child force limitations." },
+            { id: 165, category: "Force Options & Tactics", q: "P.C. 9.21: Public duty", a: "The use of force is justified when an actor reasonably believes their conduct is required or authorized by law in carrying out official public duties." },
+            { id: 166, category: "Force Options & Tactics", q: "P.C. 9.31: Self-defense", a: "Use of force against another when and to the degree the actor reasonably believes the force is immediately necessary to protect against the other's use or attempted use of unlawful force." },
+            { id: 167, category: "Force Options & Tactics", q: "Control defined (Force Options)", a: "The degree of physical influence and tactical dominance an officer exerts over a subject to achieve compliance or take them into custody." },
+            { id: 168, category: "Force Options & Tactics", q: "Constraints defined (Force Options)", a: "Environmental factors, physical limitations, lighting, weather, or tactical obstacles affecting the application of force options." },
+            { id: 169, category: "Force Options & Tactics", q: "Empathy (Force Options)", a: "Utilizing emotional awareness and de-escalation skills during tactical encounters to reduce hostility without compromising officer safety." },
+            { id: 170, category: "Force Options & Tactics", q: "What do courts look at to consider force (Force Options)", a: "Evaluated under the Graham v. Connor objective reasonableness standard (evaluating the severity of the crime, immediate threat to officers/others, and whether the subject is actively resisting or fleeing)." },
+            { id: 171, category: "Force Options & Tactics", q: "P.C. 9.42: Deadly force to protect property", a: "Justified under strict statutory parameters to prevent arson, burglary, robbery, theft at night, or criminal mischief at night when other means fail." },
+            { id: 172, category: "Force Options & Tactics", q: "Greatest asset to use on violator (Force Options)", a: "Effective verbal communication, officer presence, tactical positioning, and psychological de-escalation." },
+            { id: 173, category: "Force Options & Tactics", q: "Arrest and Control – handcuffs", a: "Safe mechanical restraint application, positioning, and mandatory double-locking procedures to prevent nerve damage and escape." },
+            { id: 174, category: "Force Options & Tactics", q: "P.C. 20.02 / Two officer contact", a: "Safety principles, triangulation, and tactical coordination during multi-officer field contacts." },
+            { id: 175, category: "Force Options & Tactics", q: "V-position – 1st level of Force", a: "Tactical positioning setup used by officers during contacts to maintain a tactical advantage and reaction gap." },
+            { id: 176, category: "Force Options & Tactics", q: "Presence – Arrest & Control", a: "Officer presence serving as the foundational, non-verbal baseline of the use-of-force continuum." },
+            { id: 177, category: "Force Options & Tactics", q: "Weaponless strategies – Arrest & Control", a: "Empty-hand control techniques, joint locks, pressure point applications, and physical takedowns." },
+            { id: 178, category: "Force Options & Tactics", q: "Risk factors in physical arrest", a: "Subject resistance potential, environmental hazards, lighting, cover/concealment, and physical conditioning." },
+            { id: 179, category: "Force Options & Tactics", q: "Vondrak v. City of Las Cruces", a: "Landmark federal case addressing excessively tight handcuffing as a potential 4th Amendment unreasonable seizure and excessive force violation." },
+            { id: 180, category: "Force Options & Tactics", q: "Advantage at the rear approach (Arrest & Control)", a: "Maximizing reaction time and tactical dominance by approaching from a suspect's blind spot or rear angle." },
+            { id: 181, category: "Force Options & Tactics", q: "Handcuffing two suspects together (Arrest & Control)", a: "Tactical risks and general prohibition against cuffing multiple subjects together due to severe control, balance, and officer safety hazards." },
+            { id: 182, category: "General & Administration", q: "Ethology defined", a: "The scientific and objective study of animal behavior." },
+            { id: 183, category: "General & Administration", q: "Types of dog aggression", a: "Predatory, territorial, defensive, maternal, and pain-induced aggression encountered by officers in the field." },
+            { id: 184, category: "Penal Code", q: "PC 22.011 / 21.11 Sexual Assault", a: "Statutory elements defining non-consensual sexual intercourse or sexual assault crimes under Texas Penal Code Chapter 22, establishing severe felony penalties based on lack of consent, coercion, or victim incapacity." },
+            { id: 185, category: "Penal Code", q: "PC 39.03 Official Oppression Offense Classification", a: "Class A misdemeanor committed when a public servant acting under color of office intentionally subjects another to unlawful mistreatment or arrest." },
+            { id: 186, category: "General & Administration", q: "TCOLE Handgun Qualification Passing Score", a: "A minimum passing score of 70% required on the TCOLE mandatory handgun qualification course of fire." },
+            { id: 187, category: "Constitutional Law", q: "Whren v. U.S. (Traffic Detention 4th Amendment)", a: "Established that a temporary motor vehicle detention based on probable cause of a traffic violation is objectively reasonable under the 4th Amendment, regardless of subjective intent." },
+            { id: 188, category: "Code of Criminal Procedure", q: "CCP Article 18.07 - Search Warrant Execution Window", a: "Mandatory statutory execution window for search warrants is 3 whole days, excluding the day of issuance and the day of execution." },
+            { id: 189, category: "General & Administration", q: "TCOLE Reporting Limit for Arrest or Indictment", a: "Within 30 days of the event, a licensed peace officer must report any indictment, arrest, or conviction above a Class C misdemeanor to TCOLE." },
+            { id: 190, category: "Traffic", q: "TC 545.102 Turning on curve or crest of grade", a: "Operator may not turn vehicle to move in opposite direction when approaching a curve or crest of grade if vehicle is not visible to another operator within 500 feet in either direction." },
+            { id: 191, category: "Traffic", q: "TC 536.001 Permissible Conduct (Authorized Emergency Vehicles)", a: "When operating an authorized emergency vehicle, operator may park/stand, proceed past red/stop signals after slowing, exceed speed limits without endangering life/property, and disregard movement/turning directions." },
+            { id: 192, category: "Traffic", q: "TC 521.029 Operator of Motor Vehicle by new residents", a: "A person moving to Texas as a new resident who possesses a valid license from another state and is 16 or older cannot operate a vehicle for more than 90 days without obtaining a Texas license." },
+            { id: 193, category: "Traffic", q: "TC 544.010 Stop and Yield Signs", a: "An operator shall stop at a clearly marked stop line; if none, before the crosswalk; if neither, at the place nearest the intersecting roadway where the operator has a view of approaching traffic." },
+            { id: 194, category: "Traffic", q: "TC 543.004 Notice to Appear (Non-arrestable offenses)", a: "An officer shall issue a written notice to appear if the offense charged is speeding, use of a wireless communication device, or an open container violation." },
+            { id: 195, category: "Traffic", q: "TC 541.401 Reckless Driving", a: "A person commits a misdemeanor offense if they drive a vehicle with wilful or wanton disregard for persons or property." },
+            { id: 196, category: "Traffic", q: "TC 545.352 Prima Facie Speed Limits", a: "30 MPH in urban districts, 15 MPH in alleys, 70 MPH on numbered highways, 60 MPH on non-numbered highways outside urban districts, and 15 MPH on beaches." },
+            { id: 197, category: "Traffic", q: "TC 545.254 Vehicles Carrying Explosives or Flammable Liquids", a: "Operator of vehicle carrying explosives/flammable liquids traveling over 20 MPH must reduce speed to 20 MPH or less within 200 feet of railroad grade crossing, look/listen, and stop 15-50 feet from the rail." },
+            { id: 198, category: "Traffic", q: "TC 551.101 & 551.102 Bicycles Rights and Operation", a: "Bicyclists have rights and duties of vehicle operators; must ride on a permanent regular seat, carry only designed passenger loads, and maintain at least one hand on the handlebars." },
+            { id: 199, category: "Traffic", q: "TC 545.058 Driving on Improved Shoulder", a: "Permitted to drive on an improved shoulder to the right of main travel if necessary and safe only to park, accelerate before entering traffic, decelerate before a right turn, pass a slowing vehicle, let faster traffic pass, or avoid collision." },
+            { id: 200, category: "Traffic", q: "TC 545.412 Child Passenger Safety Seat Systems", a: "A person commits an offense if they transport a child younger than 8 years old or shorter than 4 feet 9 inches without a child safety seat system." },
+            { id: 201, category: "Traffic", q: "TC 521.201 License Ineligibility in General", a: "Operational department rules restricting licensure issuance based on age, unfulfilled courses, or chemical dependency." },
+            { id: 202, category: "Traffic", q: "TC 547.321 Headlamps Required", a: "Motor vehicle must be equipped with at least two headlamps (one on each side) mounted at a height from 24 to 54 inches." },
+            { id: 203, category: "Traffic", q: "TC 547.322 Tail Lamps Required", a: "Vehicles/trailers must have at least two tail lamps mounted at 15 to 72 inches, emitting a red light visible at 1,000 feet from the rear." },
+            { id: 204, category: "Traffic", q: "TC 547.328 Fog Lamps Permitted", a: "Maximum of 2 fog lamps mounted on front at 12 to 30 inches, aimed so beam at 25 feet is no higher than 4 inches below center of lamp level." },
+            { id: 205, category: "Traffic", q: "TC 545.303 Additional Parking Regulations", a: "An operator shall park the right wheels parallel within 18 inches of the curb or edge of the roadway." },
+            { id: 206, category: "Traffic", q: "TC 547.501 Audible Warning Devices", a: "Vehicle must have a horn audible under normal conditions from at least 200 feet. Non-emergency vehicles may not use bells, whistles, or sirens." },
+            { id: 207, category: "Traffic", q: "TC 547.801 Commercial Motor Vehicle (Davis Study Guide)", a: "Self-propelled/towed vehicle subject to commercial statutes, heavy hauling requirements, or transit thresholds." },
+            { id: 208, category: "Traffic", q: "TC 552.006 Use of Sidewalk by Pedestrians", a: "Pedestrians must use available sidewalks. If none, must walk against traffic on the left side. Vehicles exiting driveways/alleys must yield to sidewalk pedestrians." },
+            { id: 209, category: "Traffic", q: "TC 683.003 Conflict of Laws on Abandoned Vehicles", a: "Does not affect laws authorizing immediate removal of a vehicle left on public property that obstructs traffic." },
+            { id: 210, category: "Constitutional Law", q: "Plain Feel Doctrine", a: "Permits an officer conducting a lawful Terry frisk to seize non-threatening contraband if its incriminating identity is immediately apparent through tactile touch." },
+            { id: 211, category: "Code of Criminal Procedure", q: "C.C.P. 8.04: Duty to Disperse a Riot", a: "States it is the DUTY of every magistrate or peace officer to disperse a riot." },
+            { id: 212, category: "Penal Code", q: "PC 28.01 Habitation Definition", a: "A structure or vehicle adapted for the overnight accommodation of persons, including each separately secured or occupied portion and each appurtenant or connected structure." },
+            { id: 213, category: "Penal Code", q: "PC 28.01 Building Definition", a: "Any structure or enclosure intended for use or occupation as a habitation or for some purpose of trade, manufacture, ornament, or use." },
+            { id: 214, category: "Penal Code", q: "PC 28.01 Property Definition", a: "Real property, tangible or intangible personal property (including anything severed from land), or a document including money that represents value." },
+            { id: 215, category: "Penal Code", q: "PC 28.02 Arson", a: "Starting a fire (regardless of whether it continues after ignition) or causing an explosion with intent to destroy or damage property; graded as a second-degree felony unless it is shown on the trial of the offense that bodily injury or death was suffered by any person in the commission of the offense; or the property intended to be damaged or destroyed was a habitation or place of assembly/worship." },
+            { id: 216, category: "Penal Code", q: "PC 28.04 Reckless Damage or Destruction", a: "Recklessly damaging or destroying property of the owner without effective consent; graded as a Class C misdemeanor." },
+            { id: 217, category: "Penal Code", q: "PC 28.08 Graffiti", a: "Intentionally or knowingly making markings, inscriptions, slogans, drawings, or paintings on tangible property without effective consent using paint, indelible markers, or etching devices; graded as a state jail felony if marked on schools, places of worship, monuments, or community centers." },
+            { id: 218, category: "Penal Code", q: "PC 32.22 Criminal Simulation", a: "Making, altering, possessing, or authenticating an object with intent to defraud or harm so that it appears to have antiquity, rarity, source, or authorship value it does not possess; graded as a Class A misdemeanor." },
+            { id: 219, category: "Penal Code", q: "PC 33.01 Computer 'Access' Definition", a: "An approach, instruction, communication with, data storage, retrieval, interception, or alteration of data/software in any computer resource." },
+            { id: 220, category: "Penal Code", q: "PC 33.01 'Critical Infrastructure Facility' Definition", a: "Includes chemical manufacturing facilities, refineries, electrical power generating facilities/substations, water treatment plants, natural gas transmission compressor stations, and telecommunications central switching offices." },
+            { id: 221, category: "Penal Code", q: "PC 33.02 Breach of Computer Security", a: "Knowingly accessing a computer, computer network, or computer system without the effective consent of the owner; graded as a Class B misdemeanor or a state jail felony if previously convicted two or more times." },
+            { id: 222, category: "Code of Criminal Procedure", q: "Complaint Definition", a: "A sworn written affidavit made before a magistrate or district/county attorney charging an individual with a specific criminal offense." },
+            { id: 223, category: "Code of Criminal Procedure", q: "Bail Definition", a: "Security given by an accused defendant to guarantee future appearance before the proper court for legal proceedings." },
+            { id: 224, category: "Code of Criminal Procedure", q: "Arrest Warrant Territorial Validity", a: "A warrant of arrest issued by any magistrate extends to any part of the State of Texas and is legally enforceable anywhere statewide." },
+            { id: 225, category: "Penal Code", q: "PC 8.01 Mental Disease or Defect", a: "The term mental disease or defect does not include an abnormality manifested only by repeated criminal or otherwise antisocial conduct in a defense of insanity." },
+            { id: 226, category: "Penal Code", q: "PC 22.02 Aggravated Assault Enhancement", a: "Graded as a first-degree felony if the actor uses a deadly weapon and causes serious bodily injury to a family/household member, public servant, security officer, or a witness/informant, or discharges a firearm from a motor vehicle at a habitation/building/vehicle." },
+            { id: 227, category: "Penal Code", q: "PC 22.05 Deadly Conduct", a: "Recklessly engaging in conduct that places another in imminent danger of serious bodily injury (Class A misdemeanor), or knowingly discharging a firearm at individuals, habitations, buildings, or vehicles (Third-degree felony)." },
+            { id: 228, category: "Penal Code", q: "PC 22.07 Terroristic Threat", a: "Threatening violence with intent to cause emergency agency reaction, fear of serious bodily injury, public/utility interruption, or influence government conduct; penalties range from Class B misdemeanor up to a third-degree or state jail felony." },
+            { id: 229, category: "Penal Code", q: "PC 37.081 False Report Regarding Missing Child or Person", a: "Knowingly filing a false report or making a false statement relating to a missing child or person to law enforcement with intent to deceive; graded as a Class C misdemeanor." },
+            { id: 230, category: "Penal Code", q: "PC 46.08 Hoax Bombs", a: "Knowingly manufacturing, selling, purchasing, transporting, or possessing a hoax bomb to simulate an explosive device or cause public safety/emergency alarm; graded as a Class A misdemeanor." },
+            { id: 231, category: "Penal Code", q: "PC 33A.02 Unauthorized Use of Telecommunications Service", a: "Knowingly and without authority using or diverting telecommunications service for one's own benefit; graded from a Class B misdemeanor up to a first-degree felony depending on the financial value involved." },
+            { id: 232, category: "Courts & Judicial System", q: "Court of Criminal Appeals Jurisdiction", a: "The highest appellate court in Texas possessing exclusive, final appellate jurisdiction over all criminal cases, including mandatory review of death penalty sentences." },
+            { id: 233, category: "Legal Defenses", q: "Affirmative Defense Standard of Proof", a: "A defense where the defendant admits the underlying act but presents legal justifications that completely excuse liability, typically requiring proof by a preponderance of the evidence." },
+            { id: 234, category: "Penal Code", q: "Conduct Definition", a: "Conduct means an act or omission and its corresponding mental state." },
+            { id: 235, category: "Penal Code", q: "Consent Definition", a: "Consent means assent in fact, whether express or apparent." },
+            { id: 236, category: "Penal Code", q: "Controlled Substance Definition", a: "A drug, an adulterant, and a dilutant in penalty groups 1, 1-A, 2, 2-A, 3, or 4." },
+            { id: 237, category: "Penal Code", q: "Correctional Facility Definition", a: "A place designated by law for confinement of a person arrested for, charged with, or convicted of an offense." },
+            { id: 238, category: "Penal Code", q: "Possession Definition", a: "Possession means actual care, custody, control, or management." },
+            { id: 239, category: "Penal Code", q: "Serious Bodily Injury Definition", a: "Bodily injury that creates a substantial risk of death or that causes death, permanent disfigurement, or protracted loss or impairment of the function of any bodily member or organ." },
+            { id: 240, category: "General & Administration", q: "TCOLE Continuing Education Mandates", a: "Peace officers must complete designated continuing education training hours and legislative updates every 24-month unit (40hrs) and 48-month training cycle (80hrs)." }
+        ];
+
+        // DEDICATED STATUTE SLEUTH SCENARIOS (Separate from flashcard questions/answers)
+        const statuteScenarios = [
+            {
+                id: 1,
+                category: "Penal Code",
+                targetConcept: "Penal Code Official Oppression – under color of law (P.C. 39.03)",
+                scenario: "Officer Davis pulls over a vehicle on a dark stretch of highway. During the contact, knowing he has no legal justification or probable cause, he forces the driver out, handcuffs them, and conducts a humiliating strip search on the hood of the cruiser purely to harass them."
+            },
+            {
+                id: 2,
+                category: "Professional Policing",
+                targetConcept: "SARA Model",
+                scenario: "A precinct captain notices a sharp spike in commercial burglaries at a local strip mall. First, patrol data is pulled to identify times and patterns (Scanning). Next, detectives map entry points and suspect behavior (Analysis). A targeted nightly bike patrol and lighting upgrade is implemented (Response), and monthly burglary stats are compared before and after (Assessment)."
+            },
+            {
+                id: 3,
+                category: "Code of Criminal Procedure",
+                targetConcept: "Writ of Habeas Corpus",
+                scenario: "Defense counsel files an emergency court petition arguing that their client has been locked in county holding cells for over 72 hours without an arraignment, demanding that the jailer present the prisoner before a judge immediately to justify the legality of the restraint."
+            },
+            {
+                id: 4,
+                category: "Constitutional Law",
+                targetConcept: "Whren v. U.S.",
+                scenario: "Patrol officers observe a sedan fail to signal a lane change. They initiate a traffic stop and discover narcotics in plain view. Defense attorneys argue the stop was a pretext because the driver was a minority, but the court rules that as long as there was objective probable cause for the traffic infraction, the officer's underlying motives don't matter."
+            },
+            {
+                id: 5,
+                category: "Penal Code",
+                targetConcept: "P.C. 49.02: Public Intoxication",
+                scenario: "Responding to a disturbance at a downtown diner, officers locate a patron stumbling between tables, reeking of alcohol, slurring speech, and creating a safety hazard by falling against sharp glass displays."
+            },
+            {
+                id: 6,
+                category: "Penal Code",
+                targetConcept: "P.C. 28.02: Arson",
+                scenario: "During an economic downturn, a store owner sneaks into his own commercial retail shop at midnight, pours gasoline across the inventory, and ignites it to collect insurance payout funds, nearly trapping residents sleeping in the upstairs apartment."
+            },
+            {
+                id: 7,
+                category: "Code of Criminal Procedure",
+                targetConcept: "CCP 14.05.1: Warrantless entry into a residence",
+                scenario: "Officers chasing an armed bank robber watch him sprint through the front door of a residential home. Believing he might destroy money evidence, grab more weapons, or flee through the back, officers force entry without waiting for a warrant."
+            },
+            {
+                id: 8,
+                category: "Constitutional Law",
+                targetConcept: "Terry v. Ohio",
+                scenario: "An officer observes two men repeatedly pacing back and forth in front of a jewelry store window, peering inside, and conferring suspiciously. Fearing an impending armed robbery, the officer stops them on the sidewalk and performs a quick outer-clothing pat-down for weapons."
+            },
+            {
+                id: 9,
+                category: "Traffic",
+                targetConcept: "T.C. 545.104 – Turning signals",
+                scenario: "A motorist approaches a busy intersection and initiates a sharp right turn across traffic without activating their mechanical indicator lights until they are already halfway through the turning maneuver."
+            },
+            {
+                id: 10,
+                category: "Force Options & Tactics",
+                targetConcept: "P.C. 9.31: Self-defense",
+                scenario: "While walking home from shift, an off-duty officer is accosted by an individual who lunges at them with a heavy metal pipe swinging wildly. The officer blocks the strikes and uses empty-hand force to neutralize the attack until the threat ceases."
+            }
+        ];
+
+        // Application State
+        let userBookmarks = JSON.parse(localStorage.getItem('bpoc_bookmarks')) || [1, 3, 5];
+        let userStats = JSON.parse(localStorage.getItem('bpoc_stats')) || { viewed: 0, quizzes: 0, totalScore: 0 };
+        let bookmarksOnlyMode = false;
+        let revealedCards = {};
+
+        // Quiz State
+        let currentQuizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizWrong = 0;
+        let quizTimerInterval = null;
+        let quizSeconds = 0;
+
+        // Matching Game State
+        let matchingTimerInterval = null;
+        let matchingSeconds = 0;
+        let selectedMatchTerm = null;
+        let matchedPairsCount = 0;
+
+        // Statute Sleuth State (Dynamic Randomized Deck from statuteScenarios)
+        let sleuthQueue = [];
+        let currentSleuthScenario = null;
+        let sleuthScoreCount = 0;
+        let sleuthTotalAnswered = 0;
+        let sleuthAnswerLocked = false;
+
+        // Initialization
+        window.onload = function() {
+            renderFlashcardsGrid();
+            renderIndex();
+            initStatueGame();
+        };
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-gold-500', 'text-gold-400');
+                btn.classList.add('border-transparent', 'text-zinc-400');
+            });
+
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-zinc-400');
+            activeBtn.classList.add('border-gold-500', 'text-gold-400');
+
+            if (tabId === 'matching') {
+                initMatchingGame();
+            } else if (tabId === 'statue') {
+                initStatueGame();
+            }
+        }
+
+        function renderFlashcardsGrid() {
+            const container = document.getElementById('flashcards-grid-container');
+            const categoryFilter = document.getElementById('flashcard-category-filter').value;
+
+            let filtered = bpocData;
+            if (categoryFilter !== 'all') {
+                filtered = filtered.filter(card => card.category === categoryFilter);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-zinc-500">No flashcards found matching this filter.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(card => {
+                const isBookmarked = userBookmarks.includes(card.id);
+                const isFlipped = revealedCards[card.id] || false;
+
+                return `
+                    <div class="perspective-1000 h-64 cursor-pointer" data-card-id="${card.id}" onclick="toggleCardAnswer(${card.id})">
+                        <div class="preserve-3d relative w-full h-full rounded-2xl shadow-xl ${isFlipped ? 'rotate-y-180' : ''}">
+                            
+                            <!-- FRONT SIDE -->
+                            <div class="backface-hidden absolute inset-0 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 hover:border-gold-500/50 rounded-2xl p-5 flex flex-col justify-between transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-semibold px-2.5 py-1 bg-zinc-800 text-gold-400 rounded-lg border border-zinc-700/50 uppercase tracking-wider">${card.category}</span>
+                                    <button onclick="event.stopPropagation(); toggleBookmark(${card.id})" class="text-zinc-500 hover:text-gold-400 transition p-1">
+                                        <i class="${isBookmarked ? 'fa-solid text-gold-400' : 'fa-regular'} fa-bookmark"></i>
+                                    </button>
+                                </div>
+                                <div class="my-auto">
+                                    <p class="text-sm font-semibold text-zinc-100 leading-snug">${card.q}</p>
+                                </div>
+                                <div class="pt-3 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-500">
+                                    <span>Card #${card.id}</span>
+                                    <span class="text-gold-400 hover:text-gold-300 font-medium flex items-center gap-1">
+                                        <i class="fa-solid fa-rotate"></i> Click to flip
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- BACK SIDE -->
+                            <div class="backface-hidden absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 border border-gold-500/60 rounded-2xl p-5 flex flex-col justify-between rotate-y-180 shadow-gold-500/10">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold text-gold-500 uppercase tracking-wider">Answer / Definition</span>
+                                    <button onclick="event.stopPropagation(); toggleBookmark(${card.id})" class="text-zinc-500 hover:text-gold-400 transition p-1">
+                                        <i class="${isBookmarked ? 'fa-solid text-gold-400' : 'fa-regular'} fa-bookmark"></i>
+                                    </button>
+                                </div>
+                                <div class="my-auto overflow-y-auto max-h-[130px] no-scrollbar">
+                                    <p class="text-xs text-zinc-200 leading-relaxed font-normal">${card.a}</p>
+                                </div>
+                                <div class="pt-3 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-500">
+                                    <span>Card #${card.id}</span>
+                                    <span class="text-gold-400 hover:text-gold-300 font-medium flex items-center gap-1">
+                                        <i class="fa-solid fa-rotate"></i> Flip back
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterFlashcards() {
+            renderFlashcardsGrid();
+        }
+
+        function toggleCardAnswer(id) {
+            revealedCards[id] = !revealedCards[id];
+            const cardElement = document.querySelector(`[data-card-id="${id}"] .preserve-3d`);
+            if (cardElement) {
+                if (revealedCards[id]) {
+                    cardElement.classList.add('rotate-y-180');
+                    userStats.viewed = (userStats.viewed || 0) + 1;
+                    saveStats();
+                } else {
+                    cardElement.classList.remove('rotate-y-180');
+                }
+            }
+        }
+
+        function revealAllCards(revealState) {
+            bpocData.forEach(card => {
+                revealedCards[card.id] = revealState;
+                if (revealState) userStats.viewed++;
+            });
+            saveStats();
+            renderFlashcardsGrid();
+            showToast(revealState ? "All cards flipped to answers" : "All cards reset to front");
+        }
+
+        function startQuiz() {
+            const category = document.getElementById('quiz-category').value;
+            const targetCount = parseInt(document.getElementById('quiz-count').value);
+
+            let pool = bpocData;
+            if (category !== 'all') {
+                pool = pool.filter(item => item.category === category);
+            }
+
+            if (pool.length === 0) {
+                showToast("Not enough questions in this category.");
+                return;
+            }
+
+            // Fisher-Yates shuffle helper function for true randomizing
+            function shuffleArray(array) {
+                let arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            let quizPool = [];
+            let fullShuffledPool = shuffleArray(pool);
+
+            while (quizPool.length < targetCount) {
+                if (fullShuffledPool.length === 0) {
+                    fullShuffledPool = shuffleArray(pool);
+                }
+                quizPool.push(fullShuffledPool.pop());
+            }
+
+            currentQuizQuestions = quizPool;
+            currentQuizIndex = 0;
+            quizScore = 0;
+            quizWrong = 0;
+            quizSeconds = 0;
+
+            document.getElementById('quiz-right-count').innerText = '0';
+            document.getElementById('quiz-wrong-count').innerText = '0';
+
+            document.getElementById('quiz-setup').classList.add('hidden');
+            document.getElementById('quiz-active').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-timer').innerText = "0:00:00";
+
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(() => {
+                quizSeconds++;
+                const hours = Math.floor(quizSeconds / 3600);
+                const minutes = Math.floor((quizSeconds % 3600) / 60);
+                const seconds = quizSeconds % 60;
+                document.getElementById('quiz-timer').innerText = 
+                    `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const q = currentQuizQuestions[currentQuizIndex];
+            document.getElementById('quiz-progress-text').innerText = `Question ${currentQuizIndex + 1} of ${currentQuizQuestions.length}`;
+            document.getElementById('quiz-question-text').innerText = q.q;
+
+            let options = [q.a];
+            while (options.length < 4) {
+                const randomItem = bpocData[Math.floor(Math.random() * bpocData.length)];
+                if (!options.includes(randomItem.a)) {
+                    options.push(randomItem.a);
+                }
+            }
+            options.sort(() => 0.5 - Math.random());
+
+            const optionsList = document.getElementById('quiz-options-list');
+            optionsList.innerHTML = options.map((opt, idx) => `
+                <button onclick="selectQuizOption(this, '${escapeQuotes(opt)}', '${escapeQuotes(q.a)}')" class="quiz-option-btn w-full text-left p-4 rounded-xl bg-zinc-800 border border-zinc-700/80 hover:border-gold-500 text-sm text-zinc-200 transition">
+                    <span class="font-bold text-gold-400 mr-2">${String.fromCharCode(65 + idx)}.</span> ${opt}
+                </button>
+            `).join('');
+        }
+
+        function selectQuizOption(btn, selected, correct) {
+            const allBtns = document.querySelectorAll('.quiz-option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.remove('bg-zinc-800', 'border-zinc-700');
+                btn.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+                quizScore++;
+                document.getElementById('quiz-right-count').innerText = quizScore;
+            } else {
+                btn.classList.remove('bg-zinc-800', 'border-zinc-700');
+                btn.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+                quizWrong++;
+                document.getElementById('quiz-wrong-count').innerText = quizWrong;
+                allBtns.forEach(b => {
+                    if (b.innerText.includes(correct)) {
+                        b.classList.remove('bg-zinc-800', 'border-zinc-700');
+                        b.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+                    }
+                });
+            }
+
+            // Slight delay before automatically advancing to the next question
+            setTimeout(() => {
+                currentQuizIndex++;
+                if (currentQuizIndex < currentQuizQuestions.length) {
+                    renderQuizQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1200);
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < currentQuizQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            document.getElementById('quiz-active').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+
+            const percentage = Math.round((quizScore / currentQuizQuestions.length) * 100);
+            document.getElementById('quiz-score-summary').innerText = `You scored ${quizScore} out of ${currentQuizQuestions.length} correct (${percentage}%).`;
+
+            userStats.quizzes = (userStats.quizzes || 0) + 1;
+            userStats.totalScore = (userStats.totalScore || 0) + percentage;
+            saveStats();
+        }
+
+        function quitQuiz() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            document.getElementById('quiz-active').classList.add('hidden');
+            document.getElementById('quiz-setup').classList.remove('hidden');
+        }
+
+        function resetQuiz() {
+            quitQuiz();
+        }
+
+        function initMatchingGame() {
+            if (matchingTimerInterval) clearInterval(matchingTimerInterval);
+            matchingSeconds = 0;
+            matchedPairsCount = 0;
+            selectedMatchTerm = null;
+            document.getElementById('matching-timer').innerText = "0:00:00";
+
+            matchingTimerInterval = setInterval(() => {
+                matchingSeconds++;
+                const hours = Math.floor(matchingSeconds / 3600);
+                const minutes = Math.floor((matchingSeconds % 3600) / 60);
+                const seconds = matchingSeconds % 60;
+                document.getElementById('matching-timer').innerText = 
+                    `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+
+            const subset = [...bpocData].sort(() => 0.5 - Math.random()).slice(0, 6);
+            const terms = subset.map((item, idx) => ({ id: item.id, text: item.q, type: 'term', matched: false }));
+            const answers = subset.map((item, idx) => ({ id: item.id, text: item.a, type: 'answer', matched: false }));
+
+            const shuffledTerms = [...terms].sort(() => 0.5 - Math.random());
+            const shuffledAnswers = [...answers].sort(() => 0.5 - Math.random());
+
+            const board = document.getElementById('matching-board');
+            board.innerHTML = `
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Concepts / Questions</h3>
+                    <div id="matching-terms-col" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                        ${shuffledTerms.map(t => `<div onclick="selectMatchCard(this, ${t.id}, 'term')" data-id="${t.id}" class="match-card bg-zinc-800 border border-zinc-700 p-4 rounded-xl text-sm cursor-pointer hover:border-gold-500 transition">${t.text}</div>`).join('')}
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Definitions / Answers</h3>
+                    <div id="matching-answers-col" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                        ${shuffledAnswers.map(a => `<div onclick="selectMatchCard(this, ${a.id}, 'answer')" data-id="${a.id}" class="match-card bg-zinc-800 border border-zinc-700 p-4 rounded-xl text-sm cursor-pointer hover:border-gold-500 transition">${a.text}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        let firstMatchSelection = null;
+        function selectMatchCard(element, id, type) {
+            if (element.classList.contains('bg-emerald-950')) return;
+
+            if (!firstMatchSelection) {
+                firstMatchSelection = { element, id, type };
+                element.classList.add('border-gold-500', 'bg-zinc-700');
+            } else {
+                if (firstMatchSelection.type === type) {
+                    firstMatchSelection.element.classList.remove('border-gold-500', 'bg-zinc-700');
+                    firstMatchSelection = { element, id, type };
+                    element.classList.add('border-gold-500', 'bg-zinc-700');
+                } else {
+                    if (firstMatchSelection.id === id) {
+                        firstMatchSelection.element.classList.remove('border-gold-500', 'bg-zinc-700');
+                        firstMatchSelection.element.classList.add('bg-emerald-950/65', 'border-emerald-500', 'opacity-60');
+                        element.classList.add('bg-emerald-950/65', 'border-emerald-500', 'opacity-60');
+                        firstMatchSelection = null;
+                        matchedPairsCount++;
+
+                        if (matchedPairsCount === 6) {
+                            clearInterval(matchingTimerInterval);
+                            const finalTimeString = document.getElementById('matching-timer').innerText;
+                            showToast(`Matching completed in ${finalTimeString}!`);
+                        }
+                    } else {
+                        firstMatchSelection.element.classList.remove('border-gold-500', 'bg-zinc-700');
+                        firstMatchSelection.element.classList.add('bg-rose-950/50', 'border-rose-500');
+                        element.classList.add('bg-rose-950/50', 'border-rose-500');
+                        setTimeout(() => {
+                            firstMatchSelection?.element.classList.remove('bg-rose-950/50', 'border-rose-500');
+                            element.classList.remove('bg-rose-950/50', 'border-rose-500');
+                            firstMatchSelection = null;
+                        }, 500);
+                    }
+                }
+            }
+        }
+
+        // STATUTE SLEUTH LOGIC (Uses dedicated statuteScenarios dataset)
+        function initStatueGame() {
+            sleuthQueue = [...statuteScenarios].sort(() => 0.5 - Math.random());
+            sleuthScoreCount = 0;
+            sleuthTotalAnswered = 0;
+            document.getElementById('statue-score').innerText = `Score: 0 / 0`;
+            loadSleuthScenario();
+        }
+
+        function loadSleuthScenario() {
+            if (sleuthQueue.length === 0) {
+                const container = document.getElementById('statue-game-container');
+                container.innerHTML = `
+                    <div class="text-center py-12 space-y-4">
+                        <div class="w-16 h-16 bg-gold-500/10 border-2 border-gold-500 text-gold-400 rounded-3xl mx-auto flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Case Deck Completed!</h3>
+                        <p class="text-sm text-zinc-400">You have successfully reviewed all Statute Sleuth scenarios without repeating.</p>
+                        <button onclick="initStatueGame()" class="bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold px-6 py-2.5 rounded-xl text-sm transition">Restart Deck</button>
+                    </div>
+                `;
+                return;
+            }
+
+            currentSleuthScenario = sleuthQueue.pop();
+            sleuthAnswerLocked = false;
+
+            let distractorPool = statuteScenarios.filter(s => s.id !== currentSleuthScenario.id);
+            distractorPool.sort(() => 0.5 - Math.random());
+            let choices = [currentSleuthScenario.targetConcept];
+            while (choices.length < 4 && distractorPool.length > 0) {
+                let d = distractorPool.pop();
+                if (!choices.includes(d.targetConcept)) {
+                    choices.push(d.targetConcept);
+                }
+            }
+            choices.sort(() => 0.5 - Math.random());
+
+            const container = document.getElementById('statue-game-container');
+            container.innerHTML = `
+                <div class="bg-zinc-800/40 border border-zinc-700/60 rounded-xl p-5 space-y-3">
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-zinc-800 text-gold-400 rounded-lg border border-zinc-700/50 uppercase tracking-wider">${currentSleuthScenario.category}</span>
+                    <p class="text-sm text-zinc-200 leading-relaxed font-medium">${currentSleuthScenario.scenario}</p>
+                </div>
+                <div class="space-y-3" id="sleuth-choices-list">
+                    ${choices.map((c, idx) => `
+                        <button onclick="handleSleuthSelection(this, '${escapeQuotes(c)}', '${escapeQuotes(currentSleuthScenario.targetConcept)}')" class="sleuth-btn w-full text-left p-4 rounded-xl bg-zinc-800 border border-zinc-700/80 hover:border-gold-500 text-sm text-zinc-200 transition">
+                            <span class="font-bold text-gold-400 mr-2">${String.fromCharCode(65 + idx)}.</span>${c}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="sleuth-next-box" class="hidden pt-2">
+                    <button onclick="loadSleuthScenario()" class="w-full bg-gold-500 hover:bg-gold-400 text-zinc-950 font-semibold py-3 rounded-xl text-sm transition">Next Scenario</button>
+                </div>
+            `;
+        }
+
+        function handleSleuthSelection(btn, selected, correct) {
+            if (sleuthAnswerLocked) return;
+            sleuthAnswerLocked = true;
+            sleuthTotalAnswered++;
+
+            const allBtns = document.querySelectorAll('.sleuth-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.remove('bg-zinc-800', 'border-zinc-700');
+                btn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-200');
+                sleuthScoreCount++;
+            } else {
+                btn.classList.remove('bg-zinc-800', 'border-zinc-700');
+                btn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-200');
+                allBtns.forEach(b => {
+                    if (b.innerText.includes(correct)) {
+                        b.classList.remove('bg-zinc-800', 'border-zinc-700');
+                        b.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-200');
+                    }
+                });
+            }
+
+            document.getElementById('statue-score').innerText = `Score: ${sleuthScoreCount} / ${sleuthTotalAnswered}`;
+            document.getElementById('sleuth-next-box').classList.remove('hidden');
+        }
+
+        // STUDY INDEX & BOOKMARKS LOGIC
+        function renderIndex() {
+            const container = document.getElementById('index-list');
+            const categoryFilter = document.getElementById('index-category-filter').value;
+            const searchQuery = document.getElementById('index-search').value.toLowerCase().trim();
+
+            let items = bpocData;
+
+            if (bookmarksOnlyMode) {
+                items = items.filter(i => userBookmarks.includes(i.id));
+            }
+
+            if (categoryFilter !== 'all') {
+                items = items.filter(i => i.category === categoryFilter);
+            }
+
+            if (searchQuery !== '') {
+                items = items.filter(i => i.q.toLowerCase().includes(searchQuery) || i.a.toLowerCase().includes(searchQuery) || i.category.toLowerCase().includes(searchQuery));
+            }
+
+            document.getElementById('index-term-counter').innerText = `${items.length} Terms`;
+
+            if (items.length === 0) {
+                container.innerHTML = `<div class="py-12 text-center text-zinc-500 text-sm">No terms found matching your filter or search query.</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => {
+                const isBookmarked = userBookmarks.includes(item.id);
+                return `
+                    <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-zinc-900/40 px-3 rounded-xl transition">
+                        <div class="space-y-1 max-w-3xl">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-semibold px-2 py-0.5 bg-zinc-800 text-gold-400 rounded border border-zinc-700/50 uppercase">${item.category}</span>
+                                <span class="text-xs text-zinc-500">ID #${item.id}</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-zinc-100">${item.q}</h4>
+                            <p class="text-xs text-zinc-400 leading-relaxed">${item.a}</p>
+                        </div>
+                        <button onclick="toggleBookmark(${item.id})" class="self-start sm:self-center text-zinc-500 hover:text-gold-400 transition p-2">
+                            <i class="${isBookmarked ? 'fa-solid text-gold-400' : 'fa-regular'} fa-bookmark text-base"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleBookmark(id) {
+            if (userBookmarks.includes(id)) {
+                userBookmarks = userBookmarks.filter(bId => bId !== id);
+                showToast("Bookmark removed");
+            } else {
+                userBookmarks.push(id);
+                showToast("Bookmark added");
+            }
+            saveBookmarks();
+            renderFlashcardsGrid();
+            renderIndex();
+        }
+
+        function toggleBookmarkFilter() {
+            bookmarksOnlyMode = !bookmarksOnlyMode;
+            const btn = document.getElementById('bookmark-filter-btn');
+            if (bookmarksOnlyMode) {
+                btn.classList.add('border-gold-500', 'text-gold-400', 'bg-zinc-800');
+            } else {
+                btn.classList.remove('border-gold-500', 'text-gold-400');
+            }
+            renderIndex();
+        }
+
+        // STATS & MODALS LOGIC
+        function openStatsModal() {
+            document.getElementById('stat-cards-viewed').innerText = userStats.viewed || 0;
+            document.getElementById('stat-quizzes-taken').innerText = userStats.quizzes || 0;
+            const avg = userStats.quizzes > 0 ? Math.round(userStats.totalScore / userStats.quizzes) : 0;
+            document.getElementById('stat-avg-score').innerText = avg + '%';
+            document.getElementById('stat-bookmarks-count').innerText = userBookmarks.length;
+            document.getElementById('stats-modal').classList.remove('hidden');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.add('hidden');
+        }
+
+        function openTheftModal() {
+            document.getElementById('theft-modal').classList.remove('hidden');
+        }
+
+        function closeTheftModal() {
+            document.getElementById('theft-modal').classList.add('hidden');
+        }
+
+        function saveBookmarks() {
+            localStorage.setItem('bpoc_bookmarks', JSON.stringify(userBookmarks));
+        }
+
+        function saveStats() {
+            localStorage.setItem('bpoc_stats', JSON.stringify(userStats));
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
